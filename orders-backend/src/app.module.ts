@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_GUARD } from '@nestjs/core';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrdersModule } from './orders/orders.module';
-import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { ProductModule } from './products/products.module';
+import { UserModule } from './users/users.module';
+import { makeCounterProvider, PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
@@ -18,11 +20,18 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
       username: 'eato',
       password: '12345',
       database: 'orders',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      autoLoadEntities: true,
       synchronize: true,
-      logging: true,
+      //logging: true,
+    }),
+    PrometheusModule.register({
+      defaultMetrics: {
+        enabled: true,
+      },
     }),
     OrdersModule,
+    ProductModule,
+    UserModule,
     AuthModule,
   ],
   controllers: [AppController],
@@ -31,7 +40,11 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard
-    }
+    },
+    makeCounterProvider({
+      name: 'http_requests_total',
+      help: 'Total number of HTTP request',
+    }),
   ],
 })
 export class AppModule {}
