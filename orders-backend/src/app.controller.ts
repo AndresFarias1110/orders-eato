@@ -1,12 +1,18 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter } from 'prom-client';
+import { Public } from './auth/public.decorator';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    @InjectMetric('http_requests_total') private readonly counter: Counter<string>,
+  ) {}
 
-  @Get()
+  @Public()
+  @Get('metrics')
   getHello(): string {
-    return this.appService.getHello();
+    this.counter.inc();
+    return 'Metrics endpoint hit!';
   }
 }

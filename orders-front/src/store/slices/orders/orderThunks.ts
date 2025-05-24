@@ -4,6 +4,7 @@ import type { OrderModel, OrderStateModel } from "../../../models/orders.model";
 import { AuthEmun } from "../../../enums/authEnum";
 import { appApi } from "../../../services/appApiService";
 import { onSaveOrder } from "./orderSlice";
+import { AppAlert } from "../../../components/AppAlert/AppAlert";
 
 export const getApiOrders = () => {
     return async function (dispatch: ThunkDispatch<
@@ -18,13 +19,9 @@ export const getApiOrders = () => {
                 }
             });
             dispatch(onSaveOrder(resp.data));
+            return true;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-
-            if (error.response?.data.code === 9007) {
-                console.log('error en login');
-
-            }
         }
     };
 };
@@ -34,16 +31,13 @@ export const postApiOrders = (body: OrderModel) => {
             try {
                 const token = localStorage.getItem(AuthEmun.token);
                 await appApi.post('/orders', body, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                new AppAlert('Se a creado exitosamente la orden.', 1);
+                return true;
             } catch (error: any) {
-    
-                if (error.response.data.code === 9007) {
-                    console.log('error en login');
-    
-                }
             }
         };
 };

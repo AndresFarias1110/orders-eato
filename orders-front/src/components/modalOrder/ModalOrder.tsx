@@ -3,6 +3,7 @@ import { AppSelect } from "../select/AppSelect";
 import { useAppDispatch } from "../../hooks/hooks";
 import type { AppDispatch } from "../../store/store";
 import { getApiOrders, postApiOrders } from "../../store/slices/orders/orderThunks";
+import { AppAlert } from "../AppAlert/AppAlert";
 
 interface PropsModalUser {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,22 +17,37 @@ export function ModalOrder({ onClickModalUser }: PropsModalUser) {
     listProducts = value;
   };
 
-  const handleClickSave = () => {
-    dispatch(postApiOrders({
-      state: 'InProcess',
-      products: listProducts.map(p => p.value),
-      userId: 1,
-    }));
-    dispatch(getApiOrders());
+  const handleClickSave = async () => {
+    if (listProducts.length) {
+      await dispatch(postApiOrders({
+        state: 'InProcess',
+        products: listProducts.map(p => p.value),
+        userId: 1,
+      }));
+      dispatch(getApiOrders());
+      onClickModalUser();
+    } else {
+      new AppAlert('Selecciona al menos un producto a la orden.', 2);
+    }
+
   };
 
   return (
     <Modal show={true} backdrop="static" keyboard={false}>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>Agregar nueva orden</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <AppSelect onSelectChange={handleOnChange} />
+        <div className="row">
+          <div className="col mb-4">
+            <span>Selecciona los productos para agregar a la orden</span>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col mb-4">
+            <AppSelect onSelectChange={handleOnChange} />
+          </div>
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClickModalUser}>

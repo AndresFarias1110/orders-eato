@@ -15,7 +15,7 @@ export function AppSelect({ onSelectChange }: PropsAppSelect) {
 
     return (
         <Select
-            closeMenuOnSelect={false}
+            closeMenuOnSelect={true}
             components={animatedComponents}
             onChange={onSelectChange}
             isMulti

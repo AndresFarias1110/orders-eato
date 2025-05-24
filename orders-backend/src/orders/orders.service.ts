@@ -39,19 +39,19 @@ export class OrdersService {
       return product;
     }
     
-    return new NotFoundException("No existe el usuario");
+    throw new NotFoundException("No existe el usuario para agregar a la orden");
   }
 
   findAll() {
     return this.orderRepository.find({
-      relations: ['products'],
+      relations: ['products', 'user'],
     });
   }
 
   findOne(id: number) {
     return this.orderRepository.findOne({
       where: { id },
-      relations: ['products'],
+      relations: ['products', 'user'],
     });
   }
 
