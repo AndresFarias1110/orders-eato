@@ -11,13 +11,14 @@ export const getApiUsers = () => {
         { userState: UserStateModel; }, undefined, AnyAction
     >) {
         try {
+
             const token = localStorage.getItem(AuthEmun.token);
-            const resp = await appApi.get('/api/user/retrieve', {
+            const resp = await appApi.get('/users', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            dispatch(onAddUsers(resp.data.data));
+            dispatch(onAddUsers(resp.data));
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
 

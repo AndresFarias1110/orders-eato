@@ -11,7 +11,7 @@ export const postAuth = (body: AuthModel) => {
         { authState: AuthStateModel; }, undefined, AnyAction
     >) {
         try {
-            const resp = await appApi.post('/login', body);
+            const resp = await appApi.post('/auth/login', body);
             dispatch(onLogin(resp.data));
         } catch (error: any) {
 

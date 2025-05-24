@@ -5,27 +5,29 @@ import { AppTable } from "../../components/table/AppTable";
 import "./Home.css";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import type { AppDispatch } from "../../store/store";
-import { getApiUsers } from "../../store/slices/users/usersThunks";
-import { ModalUser } from "../../components/modalUser/ModalUser";
+import { ModalOrder } from "../../components/modalOrder/ModalOrder";
+import { getApiOrders } from "../../store/slices/orders/orderThunks";
+import { getApiProducts } from "../../store/slices/products/productsThunks";
 
 const columns = [
     "Id",
-    "Nombre",
-    "Primer apellido",
-    "Segundo apellido",
-    "Correo",
-    "Edad",
+    "Folio",
+    "Productos",
+    "Subtotoal",
+    "Creación",
+    "Estatus"
 ];
 
 export function Home() {
     const dispatch: AppDispatch = useAppDispatch();
-    const { usersList } = useAppSelector(
-        state => state.userState,
+    const { orderList } = useAppSelector(
+        state => state.orderState,
     );
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        dispatch(getApiUsers());
+        dispatch(getApiOrders());
+        dispatch(getApiProducts());
     }, []);
 
     const handleClick = () => {
@@ -39,22 +41,22 @@ export function Home() {
     return (
         <div className="" >
             <div className="mt-4 mb-4 text-white">
-                <h1>Administración de usuarios {usersList.length}</h1>
+                <h2>Administración de órdenes</h2>
             </div>
             <div className="container">
                 <Card bg="light">
                     <CardBody>
                         <CardTitle>Lista de usuarios</CardTitle>
-                        <AppTable columns={columns} userList={usersList} />
+                        <AppTable columns={columns} orderList={orderList} />
                     </CardBody>
                      <Card.Body>
                         <Card.Link>
-                            <Button onClick={handleClick} variant="primary">Nuevo usuario</Button>
+                            <Button onClick={handleClick} variant="primary">Nueva orden</Button>
                         </Card.Link>
                     </Card.Body>
                 </Card>
             </div>
-            {show ? <ModalUser onClickModalUser={handleShowModal}></ModalUser> : ""}
+            {show ? <ModalOrder onClickModalUser={handleShowModal} /> : ""}
         </div>
     );
 }

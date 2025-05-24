@@ -25,7 +25,7 @@ const Login = () => {
                 initialValues={{ email: "", password: "" }}
                 onSubmit={async (values, { setSubmitting }) => {
                   await dispatch(
-                    postAuth({ email: values.email, password: values.password })
+                    postAuth({ username: values.email, password: values.password })
                   );
                   setSubmitting(false);
                   navigate('/');

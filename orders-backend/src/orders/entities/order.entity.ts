@@ -1,27 +1,38 @@
-import { Product } from "src/products/entities/product.entity";
+import { Product } from 'src/products/entities/product.entity';
+import { User } from 'src/users/entities/user.entity';
 
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  Generated,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
-} from "typeorm";
+} from 'typeorm';
 
-@Entity("orders")
+@Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  @Generated('uuid')
+  folio: string;
 
   @Column()
-  quantity: string;
+  state: string;
 
   @ManyToMany(() => Product, (product) => product.orders, {
     cascade: true,
   })
   @JoinTable()
   products: Product[];
+
+  @ManyToOne(() => User, user => user.orders)
+  user: User;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 }

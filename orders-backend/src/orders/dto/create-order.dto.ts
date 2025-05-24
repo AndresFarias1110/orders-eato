@@ -1,7 +1,13 @@
-import { Product } from "src/products/entities/product.entity";
+import { IsArray, IsBoolean, IsInt, IsString } from "class-validator";
 
 export class CreateOrderDto {
- name: string;
- quantity: number;
- products: Product[];
+
+    @IsString()
+    state: string;
+
+    @IsArray()
+    products: number[];
+
+    @IsInt()
+    userId: number;
 }

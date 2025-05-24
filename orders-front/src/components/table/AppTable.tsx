@@ -1,15 +1,24 @@
 import { Table } from "react-bootstrap";
-import type { UserModel } from "../../models/users.model";
+
+import type { OrderModel } from "../../models/orders.model";
+import type { Product } from "../../models/product.model";
+import { OrderState } from "../state/OrderState";
 
 interface PropsAppTable {
-  userList: UserModel[];
+  orderList: OrderModel[];
   columns: string[];
 }
 
 export function AppTable({
-  userList,
+  orderList,
   columns
 } : PropsAppTable) {
+
+  const subTotal = (products: Product[]): number => {
+    let subtotal = 0;
+    products?.forEach(p => subtotal += Number(p.price));
+    return subtotal;
+  };
   
   return (
     <Table striped variant="dark" responsive >
@@ -20,14 +29,14 @@ export function AppTable({
       </thead>
       <tbody>
         
-          {userList.map((user: UserModel) => (
+          {orderList.map((order: OrderModel) => (
             <tr>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.firstName}</td>
-              <td>{user.lastName}</td>
-              <td>{user.email }</td>
-              <td>{user.age}</td>
+              <td>{order.id}</td>
+              <td>{order.folio}</td>
+              <td>{order.products?.length}</td>
+              <td>$ {subTotal(order.products)}</td>
+              <td>{order.createdAt}</td>
+              <td><OrderState state={order.state} /></td>
             </tr>
           ))}
       </tbody>
