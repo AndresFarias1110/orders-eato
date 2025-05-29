@@ -14,6 +14,10 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
         if (isPublic) {
             return true;
         }
+        const request = context.switchToHttp().getRequest();
+        if (request.path === '/metrics') {
+        return true; // Permite acceso sin autenticación
+        }
         return super.canActivate(context);
     }
 }
