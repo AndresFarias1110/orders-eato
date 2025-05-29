@@ -1,4 +1,3 @@
-version: '3'
 services:
   postgres:
     image: postgres:13
@@ -11,6 +10,34 @@ services:
       POSTGRES_PASSWORD: 12345
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - monitoring
+  backend:
+    build:
+      context: ./orders-backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./orders-backend:/app
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: eato
+      DB_PASSWORD: 12345
+      DB_NAME: orders
+    networks:
+      - monitoring
+  frontend:
+    build:
+      context: ./orders-front
+    ports:
+      - "5173:80"
+    volumes:
+      - ./frontend:/app
+    networks:
+      - monitoring
   rabbitmq:
     image: rabbitmq
     restart: always
@@ -35,7 +62,9 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - 4000:4000
+      - 3001:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -45,6 +74,7 @@ services:
       - prometheus
 volumes:
   postgres_data:
+  grafana-data:
 networks:
   monitoring:
     driver: bridge

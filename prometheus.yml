@@ -2,7 +2,7 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'eato-orders'
+  - job_name: 'backend'
     static_configs:
-      - targets: ['localhost:3000']
+      - targets: ['backend:4000']
 
